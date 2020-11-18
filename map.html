@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        /*  <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>       Set the size of the div element that contains the map */
+        #map {
+            height: 400px;
+            /* The height is 400 pixels */
+            width: 50%;
+			float: right;
+            /* The width is the width of the web page */
+        }
+		
+		.gm-style img {
+width: 300px;
+height:250px;
+}
+    </style>
+    <script>
+        var map;
+        var InforObj = [];
+        var centerCords = {
+            lat: 18.5913, 
+            lng: 73.7389,
+        };
+        var markersOnMap = [{
+                placeName: "B - Bungalow Studio Cottage",
+				contentInfo:" Economy Room - 2 People. No extra bedding is permissible",
+				imageInfo:"images/1.jpg",
+				priceInfo:"Rs. 2300/- Per Night",
+                LatLng: [{
+                    lat: 18.5913, 
+                    lng: 73.7389,
+                }]
+            },
+            {
+                placeName: "C - Bungalow 1 BHK",
+				contentInfo:"2 People more 1 person are permissible with extra bedding charges of Rs. 500/- per night.",
+				imageInfo:"images/2.jpg",
+				priceInfo:"Rs. 2500/- Per Night",
+                LatLng: [{
+                    lat: 18.5590,
+                    lng: 73.7868
+                }]
+            },
+            {
+                placeName: "D - 1RK Studio Cottage (AC)",
+				contentInfo:"4 People more 2 people are permissible with extra bedding charges of Rs. 500/- per night.",
+				imageInfo:"images/3.jpg",
+				priceInfo:"Rs. 1500/- Per Night",
+                LatLng: [{
+                    lat: 18.5602, 
+                    lng: 73.8031
+                }]
+            },
+            {
+                placeName: "E - Bungalow 2 BHK",
+				contentInfo:"2 People more 1 person are permissible with extra bedding charges of Rs. 500/- per night.",
+				imageInfo:"images/4.jpg",
+				priceInfo:"Rs. 2100/- Per Night",
+                LatLng: [{
+                    lat: 18.6298,
+                    lng: 73.7997
+                }]
+            },
+            {
+                placeName: "F - Bungalow 2 BHK",
+				contentInfo:"2 People more 1 person are permissible with extra bedding charges of Rs. 500/- per night.",
+				imageInfo:"images/5.jpg",
+				priceInfo:"Rs. 2500/- Per Night",
+                LatLng: [{
+                    lat: 18.5766,
+                    lng: 73.6884
+                }]
+            }
+        ];
+
+        window.onload = function () {
+            initMap();
+        };
+
+        function addMarkerInfo() {
+            for (var i = 0; i < markersOnMap.length; i++) {
+                
+
+			var contentString = "<div><a href='https://www.ekaanthomestays.com/bookings.php'><img src="+ markersOnMap[i].imageInfo+" ></a></div><div><h3>"+ markersOnMap[i].placeName+"<h3>"+ markersOnMap[i].contentInfo+"<br><br>PRICE :"+ markersOnMap[i].priceInfo+"</div>"
+
+                const marker = new google.maps.Marker({
+                    position: markersOnMap[i].LatLng[0],
+                    map: map,
+					icon:'https://img.icons8.com/fluent/48/000000/marker-storm.png'
+                });
+
+                const infowindow = new google.maps.InfoWindow({
+                    content: contentString,
+					maxWidth: 300
+ });
+
+                marker.addListener('click', function () {
+                    closeOtherInfo();
+                    infowindow.open(marker.get('map'), marker);
+                    InforObj[0] = infowindow;
+                });
+                // marker.addListener('mouseover', function () {
+                //     closeOtherInfo();
+                //     infowindow.open(marker.get('map'), marker);
+                //     InforObj[0] = infowindow;
+                // });
+                // marker.addListener('mouseout', function () {
+                //     closeOtherInfo();
+                //     infowindow.close();
+                //     InforObj[0] = infowindow;
+                // });
+            }
+        }
+
+        function closeOtherInfo() {
+            if (InforObj.length > 0) {
+                /* detach the info-window from the marker ... undocumented in the API docs */
+                InforObj[0].set("marker", null);
+                /* and close it */
+                InforObj[0].close();
+                /* blank the array */
+                InforObj.length = 0;
+            }
+        }
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: centerCords
+            });
+            addMarkerInfo();
+        }
+    </script>
+</head>
+
+<body>
+    <h3>My Google Maps Demo</h3>
+    <!--The div element for the map -->
+    <div id="map"></div>
+
+    <script src = "https://maps.googleapis.com/maps/api/js"></script>
+
+</body>
+
+</html>
