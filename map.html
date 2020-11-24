@@ -2,147 +2,553 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     <style>
         /*  <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>       Set the size of the div element that contains the map */
+        .fixed {
+            top: 58px;
+    right: 0px;
+    left: auto;
+        }
+
         #map {
-            height: 400px;
+            height: 500px;
             /* The height is 400 pixels */
-            width: 50%;
-			float: right;
+           /* width: 50%;
+			float: right;*/
             /* The width is the width of the web page */
+        }
+        .card-footer{
+            background-color:  #ffffff;
+        }
+        .card-footer small{
+            float: right;
         }
 		
 		.gm-style img {
 width: 300px;
-height:250px;
+height:170px;
+}
+.card-body {
+    padding: 1rem;
+}
+.card-title {
+    margin-bottom: .5rem;
 }
     </style>
-    <script>
-        var map;
-        var InforObj = [];
-        var centerCords = {
-            lat: 18.5913, 
-            lng: 73.7389,
-        };
-        var markersOnMap = [{
-                placeName: "B - Bungalow Studio Cottage",
-				contentInfo:" Economy Room - 2 People. No extra bedding is permissible",
-				imageInfo:"images/1.jpg",
-				priceInfo:"Rs. 2300/- Per Night",
-                LatLng: [{
-                    lat: 18.5913, 
-                    lng: 73.7389,
-                }]
-            },
-            {
-                placeName: "C - Bungalow 1 BHK",
-				contentInfo:"2 People more 1 person are permissible with extra bedding charges of Rs. 500/- per night.",
-				imageInfo:"images/2.jpg",
-				priceInfo:"Rs. 2500/- Per Night",
-                LatLng: [{
-                    lat: 18.5590,
-                    lng: 73.7868
-                }]
-            },
-            {
-                placeName: "D - 1RK Studio Cottage (AC)",
-				contentInfo:"4 People more 2 people are permissible with extra bedding charges of Rs. 500/- per night.",
-				imageInfo:"images/3.jpg",
-				priceInfo:"Rs. 1500/- Per Night",
-                LatLng: [{
-                    lat: 18.5602, 
-                    lng: 73.8031
-                }]
-            },
-            {
-                placeName: "E - Bungalow 2 BHK",
-				contentInfo:"2 People more 1 person are permissible with extra bedding charges of Rs. 500/- per night.",
-				imageInfo:"images/4.jpg",
-				priceInfo:"Rs. 2100/- Per Night",
-                LatLng: [{
-                    lat: 18.6298,
-                    lng: 73.7997
-                }]
-            },
-            {
-                placeName: "F - Bungalow 2 BHK",
-				contentInfo:"2 People more 1 person are permissible with extra bedding charges of Rs. 500/- per night.",
-				imageInfo:"images/5.jpg",
-				priceInfo:"Rs. 2500/- Per Night",
-                LatLng: [{
-                    lat: 18.5766,
-                    lng: 73.6884
-                }]
-            }
-        ];
-
-        window.onload = function () {
-            initMap();
-        };
-
-        function addMarkerInfo() {
-            for (var i = 0; i < markersOnMap.length; i++) {
-                
-
-			var contentString = "<div><a href='https://www.ekaanthomestays.com/bookings.php'><img src="+ markersOnMap[i].imageInfo+" ></a></div><div><h3>"+ markersOnMap[i].placeName+"<h3>"+ markersOnMap[i].contentInfo+"<br><br>PRICE :"+ markersOnMap[i].priceInfo+"</div>"
-
-                const marker = new google.maps.Marker({
-                    position: markersOnMap[i].LatLng[0],
-                    map: map,
-					icon:'https://img.icons8.com/fluent/48/000000/marker-storm.png'
-                });
-
-                const infowindow = new google.maps.InfoWindow({
-                    content: contentString,
-					maxWidth: 300
- });
-
-                marker.addListener('click', function () {
-                    closeOtherInfo();
-                    infowindow.open(marker.get('map'), marker);
-                    InforObj[0] = infowindow;
-                });
-                // marker.addListener('mouseover', function () {
-                //     closeOtherInfo();
-                //     infowindow.open(marker.get('map'), marker);
-                //     InforObj[0] = infowindow;
-                // });
-                // marker.addListener('mouseout', function () {
-                //     closeOtherInfo();
-                //     infowindow.close();
-                //     InforObj[0] = infowindow;
-                // });
-            }
-        }
-
-        function closeOtherInfo() {
-            if (InforObj.length > 0) {
-                /* detach the info-window from the marker ... undocumented in the API docs */
-                InforObj[0].set("marker", null);
-                /* and close it */
-                InforObj[0].close();
-                /* blank the array */
-                InforObj.length = 0;
-            }
-        }
-
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 10,
-                center: centerCords
-            });
-            addMarkerInfo();
-        }
-    </script>
+    
 </head>
 
 <body>
-    <h3>My Google Maps Demo</h3>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
     <!--The div element for the map -->
-    <div id="map"></div>
+    <div class="container-fluid mt-5">
+        <div class="row">
+          <div class="col-7">
+                <div class="row">
+                    <div class="col-12" >
+                        <div class="my-5">
+                            <div>18 stays · 28 Nov - 30 Nov</div>
+                            <h2>Stays in Guhagar Beach</h2>
+                            <span class="badge badge-pill badge-primary">Primary</span>
+<span class="badge badge-pill badge-secondary">Secondary</span>
+<span class="badge badge-pill badge-success">Success</span>
+<span class="badge badge-pill badge-danger">Danger</span>
+<span class="badge badge-pill badge-warning">Warning</span>
+<span class="badge badge-pill badge-info">Info</span>
+<span class="badge badge-pill badge-light">Light</span>
+<span class="badge badge-pill badge-dark">Dark</span>
+                        </div>
+                        
 
-    <script src = "https://maps.googleapis.com/maps/api/js"></script>
+                        <div class="card mb-3" id="test">
+                            <div class="row no-gutters">
+                              <div class="col-md-4">
+                                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                    <div class="carousel-inner">
+                                      <div class="carousel-item active">
+                                        <img src="images/11.jpg" class="d-block w-100" alt="..." height="210">
+                                      </div>
+                                      <div class="carousel-item">
+                                        <img src="images/22.jpg" class="d-block w-100" alt="..." height="210">
+                                      </div>
+                                      <div class="carousel-item">
+                                        <img src="images/33.jpg" class="d-block w-100" alt="..." height="210">
+                                      </div>
+                                    </div>
+                                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                      <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                      <span class="sr-only">Next</span>
+                                    </a>
+                                  </div>
+                              </div>
+                              <div class="col-md-8">
+                                <div class="card-body">
+                                    <span class="font-weight-light">Private Room in Guhagar</span>
+                                  <h5 class="">Bayoakkas Cottage 2</h5>
+                                  <p class="card-text font-weight-lighter">3 Guests | 1 Bedroom | 2 Beds | 1 Private bathroom</p>
+                                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                  
+                                </div>
+                                <div class="card-footer">
+                                    <div class="float-right">
+                                        <span class="font-weight-bold">&#8377;3424</span>/<span>night</span>
 
+                                    </div>
+                                  </div>    
+                              </div>
+                            </div>
+                          </div>
+
+                    </div>
+                    <div class="col-12">
+
+                        <div class="card mb-3">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                  <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                      <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                          <img src="images/11.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                        <div class="carousel-item">
+                                          <img src="images/22.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                        <div class="carousel-item">
+                                          <img src="images/33.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                      </div>
+                                      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                      </a>
+                                      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                      </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <span class="font-weight-light">Private Room in Guhagar</span>
+                                      <h5 class="">Bayoakkas Cottage 2</h5>
+                                      <p class="card-text font-weight-lighter">3 Guests | 1 Bedroom | 2 Beds | 1 Private bathroom</p>
+                                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                      
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="float-right">
+                                            <span class="font-weight-bold">&#8377;3424</span>/<span>night</span>
+    
+                                        </div>
+                                      </div>    
+                                  </div>
+                              </div>
+                          </div>
+
+                    </div>
+                    <div class="col-12">
+
+                        <div class="card mb-3">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                  <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                      <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                          <img src="images/11.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                        <div class="carousel-item">
+                                          <img src="images/22.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                        <div class="carousel-item">
+                                          <img src="images/33.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                      </div>
+                                      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                      </a>
+                                      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                      </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <span class="font-weight-light">Private Room in Guhagar</span>
+                                      <h5 class="">Bayoakkas Cottage 2</h5>
+                                      <p class="card-text font-weight-lighter">3 Guests | 1 Bedroom | 2 Beds | 1 Private bathroom</p>
+                                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                      
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="float-right">
+                                            <span class="font-weight-bold">&#8377;3424</span>/<span>night</span>
+    
+                                        </div>
+                                      </div>    
+                                  </div>
+                              </div>
+                          </div>
+
+                    </div>
+                    <div class="col-12">
+
+                        <div class="card mb-3">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                  <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                      <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                          <img src="images/11.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                        <div class="carousel-item">
+                                          <img src="images/22.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                        <div class="carousel-item">
+                                          <img src="images/33.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                      </div>
+                                      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                      </a>
+                                      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                      </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <span class="font-weight-light">Private Room in Guhagar</span>
+                                      <h5 class="">Bayoakkas Cottage 2</h5>
+                                      <p class="card-text font-weight-lighter">3 Guests | 1 Bedroom | 2 Beds | 1 Private bathroom</p>
+                                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                      
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="float-right">
+                                            <span class="font-weight-bold">&#8377;3424</span>/<span>night</span>
+    
+                                        </div>
+                                      </div>    
+                                  </div>
+                              </div>
+                          </div>
+
+                    </div>
+                    <div class="col-12">
+
+                        <div class="card mb-3">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                  <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                      <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                          <img src="images/11.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                        <div class="carousel-item">
+                                          <img src="images/22.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                        <div class="carousel-item">
+                                          <img src="images/33.jpg" class="d-block w-100" alt="..." height="210">
+                                        </div>
+                                      </div>
+                                      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                      </a>
+                                      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                      </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <span class="font-weight-light">Private Room in Guhagar</span>
+                                      <h5 class="">Bayoakkas Cottage 2</h5>
+                                      <p class="card-text font-weight-lighter">3 Guests | 1 Bedroom | 2 Beds | 1 Private bathroom</p>
+                                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                      
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="float-right">
+                                            <span class="font-weight-bold">&#8377;3424</span>/<span>night</span>
+    
+                                        </div>
+                                      </div>    
+                                  </div>
+                              </div>
+                          </div>
+
+                    </div>
+
+                </div>
+          </div>
+          <div class="col-5 fixed fixed-top">
+            <div id="map"></div>
+            
+          </div>
+        </div>
+        
+      </div>
+    
+
+      
 </body>
+<script>
+    
+</script>
 
 </html>
+<style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+
+
+/* The popup bubble styling. */
+.popup-bubble {
+  /* Position the bubble centred-above its parent. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -100%);
+  /* Style the bubble. */
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-family: sans-serif;
+  overflow-y: auto;
+  max-height: 60px;
+  box-shadow: 0px 2px 10px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* The parent of the bubble. A zero-height div at the top of the tip. */
+.popup-bubble-anchor {
+  /* Position the div a fixed distance above the tip. */
+  position: absolute;
+  width: 100%;
+  bottom: 8px;
+  left: 0;
+}
+
+/* This element draws the tip. */
+.popup-bubble-anchor::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Center the tip horizontally. */
+  transform: translate(-50%, 0);
+  /* The tip is a https://css-tricks.com/snippets/css/css-triangle/ */
+  width: 0;
+  height: 0;
+  /* The tip is 8px high, and 12px wide. */
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid white;
+}
+
+/* JavaScript will position this div at the bottom of the popup tip. */
+.popup-container {
+  cursor: auto;
+  height: 0;
+  position: absolute;
+  /* The max width of the info window. */
+  width: 200px;
+}
+</style>
+
+
+
+<script>
+    var map;
+    let popup, Popup;
+    var InforObj = [];
+    var centerCords = {
+        lat: 18.5913, 
+        lng: 73.7389,
+    };
+    var markersOnMap = [{
+            placeName: "B - Bungalow Studio Cottage",
+            contentInfo:" Economy Room - 2 People. No extra bedding is permissible",
+            imageInfo:"images/1.jpg",
+            priceInfo:"Rs. 2300/- Per Night",
+            LatLng: [{
+                lat: 18.5913, 
+                lng: 73.7389,
+            }]
+        },
+        {
+            placeName: "C - Bungalow 1 BHK",
+            contentInfo:"2 People more 1 person are permissible with extra bedding charges of Rs. 500/- per night.",
+            imageInfo:"images/2.jpg",
+            priceInfo:"Rs. 2500/- Per Night",
+            LatLng: [{
+                lat: 18.5590,
+                lng: 73.7868
+            }]
+        },
+        {
+            placeName: "D - 1RK Studio Cottage (AC)",
+            contentInfo:"4 People more 2 people are permissible with extra bedding charges of Rs. 500/- per night.",
+            imageInfo:"images/3.jpg",
+            priceInfo:"Rs. 1500/- Per Night",
+            LatLng: [{
+                lat: 18.5602, 
+                lng: 73.8031
+            }]
+        },
+        {
+            placeName: "E - Bungalow 2 BHK",
+            contentInfo:"2 People more 1 person are permissible with extra bedding charges of Rs. 500/- per night.",
+            imageInfo:"images/4.jpg",
+            priceInfo:"Rs. 2100/- Per Night",
+            LatLng: [{
+                lat: 18.6298,
+                lng: 73.7997
+            }]
+        },
+        {
+            placeName: "F - Bungalow 2 BHK",
+            contentInfo:"2 People more 1 person are permissible with extra bedding charges of Rs. 500/- per night.",
+            imageInfo:"images/5.jpg",
+            priceInfo:"Rs. 2500/- Per Night",
+            LatLng: [{
+                lat: 18.5766,
+                lng: 73.6884
+            }]
+        }
+    ];
+
+    window.onload = function () {
+        initMap();
+    };
+
+    function addMarkerInfo() {
+
+        for (var i = 0; i < markersOnMap.length; i++) {
+            
+            var contentString = '<div class="card">'+
+    '<img src="images/11.jpg" class="card-img-top" alt="...">'+
+    '<div class="card-body">'+
+      '<h5 class="card-title">Card title</h5>'+
+      '<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>'+
+    '</div>'+
+    '<div class="card-footer">'+
+      '<small class="text-muted">Last updated 3 mins ago</small>'+
+    '</div>'+
+  '</div>';
+       // var contentString = "<div><a href='https://www.ekaanthomestays.com/bookings.php'><img src="+ markersOnMap[i].imageInfo+" ></a></div><div><h3>"+ markersOnMap[i].placeName+"<h3>"+ markersOnMap[i].contentInfo+"<br><br>PRICE :"+ markersOnMap[i].priceInfo+"</div>";
+
+            const marker = new google.maps.Marker({
+                position: markersOnMap[i].LatLng[0],
+                map: map,
+            });
+
+            
+            const infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 250
+});
+
+
+            marker.addListener('click', function () {
+                closeOtherInfo();
+                infowindow.open(marker.get('map'), marker);
+                InforObj[0] = infowindow;
+            });
+            document.getElementsByClassName('no-gutters')[i].onmouseover = function(){
+                closeOtherInfo();
+                infowindow.open(marker.get('map'), marker);
+                InforObj[0] = infowindow;
+            }
+            // marker.addListener('mouseover', function () {
+            //     closeOtherInfo();
+            //     infowindow.open(marker.get('map'), marker);
+            //     InforObj[0] = infowindow;
+            // });
+            // marker.addListener('mouseout', function () {
+            //     closeOtherInfo();
+            //     infowindow.close();
+            //     InforObj[0] = infowindow;
+            // });
+        }
+    }
+
+    function closeOtherInfo() {
+        if (InforObj.length > 0) {
+            /* detach the info-window from the marker ... undocumented in the API docs */
+            InforObj[0].set("marker", null);
+            /* and close it */
+            InforObj[0].close();
+            /* blank the array */
+            InforObj.length = 0;
+        }
+    }
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: centerCords
+        });
+
+
+ 
+/*
+popup = new Popup(
+new google.maps.LatLng(18.5913, 73.7389),
+document.getElementById("test")
+);
+*/
+        addMarkerInfo();
+        
+    }
+</script>
+
+<script src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBIwzALxUPNbatRBj3Xi1Uhp0fFzwWNBkE&callback=initMap&libraries=&v=weekly"></script>
